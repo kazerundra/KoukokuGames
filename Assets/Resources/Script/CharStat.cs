@@ -11,6 +11,11 @@ public class CharStat : MonoBehaviour
     #endregion
 
     #region public function
+
+    /// <summary>
+    /// キャラのパワーテクスト変更
+    /// </summary>
+    /// <param name="newPower">パワー数字</param>
     public void ChangePowerText(int newPower)
     {
         power = newPower;

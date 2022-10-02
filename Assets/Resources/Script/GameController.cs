@@ -24,6 +24,9 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region private function
+    /// <summary>
+    /// ゲームクリア条件を満たすの確認
+    /// </summary>
     private void CheckGameClear()
     {
         if (CheckTowerClear(towerList.Count - 1))
@@ -31,7 +34,11 @@ public class GameController : MonoBehaviour
             GameOver("Game Clear");
         };
     }
-    //ランダムリストを作る
+    /// <summary>
+    /// ランダムリストを作る
+    /// </summary>
+    /// <param name="listCount">作りたいリストの長さ/param>
+    /// <returns></returns>
     private List<int> CreateRandomNumber(int listCount)
     {
         List<int> randomNumberList = new List<int>();
@@ -46,7 +53,11 @@ public class GameController : MonoBehaviour
         return randomNumberList;
     }
 
-    //リストデータをシャッフル
+    /// <summary>
+    /// リストデータをシャッフル
+    /// </summary>
+    /// <param name="randomNumberList"></param>
+    /// <returns></returns>
     private List<int> ShuffleList(List<int> randomNumberList)
     {
         for (int k = 0; k < randomNumberList.Count; k++)
@@ -62,7 +73,9 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region public function
-    //全タワーの番号をランダマイズ
+    /// <summary>
+    /// 全タワーの番号をランダマイズ
+    /// </summary>
     public void RandomizeTowerNumber()
     {
         currentMaxNumber = player.charStat.power;
@@ -82,6 +95,13 @@ public class GameController : MonoBehaviour
         }
     }
 
+
+
+    /// <summary>
+    ///  次のタワーに行けるかどうか確認
+    /// </summary>
+    /// <param name="towerPos">タワー番号</param>
+    /// <returns></returns>
     public bool CheckTowerClear(int towerPos)
     {
         int clearNumber = towerList[towerPos].Count;
@@ -102,6 +122,10 @@ public class GameController : MonoBehaviour
             return false;
         }
     }
+
+    /// <summary>
+    /// 勝った時
+    /// </summary>
     public void WinBattle()
     {
         currentTower.clear = true;
@@ -114,6 +138,10 @@ public class GameController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// ゲームオーバー
+    /// </summary>
+    /// <param name="gameoverText">ゲームオーバーのテキスト</param>
     public void GameOver(string gameoverText)
     {
         isGameOVer = true;
@@ -124,6 +152,10 @@ public class GameController : MonoBehaviour
     #endregion
 
     #region coroutine
+    /// <summary>
+    /// プレイヤーと敵のアニメーションが両方終わるまで待つ
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator WaitAnimation()
     {
         while (!player.animOver)

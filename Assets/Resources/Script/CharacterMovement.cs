@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -51,23 +52,26 @@ public class CharacterMovement : MonoBehaviour
     #endregion
 
     #region private function
-    //ジャンプアニメーションスタート
+    /// <summary>
+    /// ジャンプアニメーションスタート
+    /// </summary>
     void StartVerticalMove()
     {
         character.SetBool("vertMove", true);
     }
-    //着地の確認
+    /// <summary>
+    /// 着地の確認
+    /// </summary>
     void LandingOver()
     {
         character.SetBool("isLanding", false);
         animOver = true;
     }
-    //アニメーション終了の呼び出す
-    void AnimOver()
-    {
-        animOver = true;
-    }
-    //敵ダメージ受ける
+
+ 
+    /// <summary>
+    /// 敵ダメージ受ける
+    /// </summary>
     void EnemyTakeDamage()
     {
         enemy.TakeDamage();
@@ -75,29 +79,45 @@ public class CharacterMovement : MonoBehaviour
     #endregion
 
     #region public function
-    //指定した場所にジャンプ
+
+    /// <summary>
+    /// 指定した場所にジャンプ
+    /// </summary>
+    /// <param name="targetPos">目次位置</param>
     public void JumpTo(Transform targetPos)
     {
         character.SetTrigger("jump");
         movePos = targetPos;
     }
-    //死亡状態確認
+    /// <summary>
+    /// 死亡状態確認
+    /// </summary>
+    /// <returns>Animator_bool_dead</returns>
     public bool GetDead()
     {
         return character.GetBool("dead");
     }
-    //歩きアニメーション
+    /// <summary>
+    /// 歩きアニメーション
+    /// </summary>
     public void MoveHorizontal()
     {
         character.SetBool("walking", true);
     }
-    //攻撃アニメーション
-    public void Attack()
+    /// <summary>
+    /// 攻撃アニメーション
+    /// </summary>
+    public async void Attack()
     {
         animOver = false;
         character.SetTrigger("attack");
+        await UniTask.WaitUntil(WaitAnimation);
+        animOver = true;
     }
-    //バトルの結果の計算
+    /// <summary>
+    /// バトルの結果の計算
+    /// </summary>
+    /// <returns>勝敗結果</returns>
     public bool WinBattle()
     {
         if (GetComponent<CharStat>().power > enemy.GetComponent<CharStat>().power)
@@ -111,17 +131,31 @@ public class CharacterMovement : MonoBehaviour
             return false;
         }
     }
-    //ダメージアニメーションを再生
-    public void TakeDamage()
+    /// <summary>
+    /// //ダメージアニメーションを再生
+    /// </summary>
+    public async void TakeDamage()
     {
         character.SetBool("dead", true);
+        await UniTask.WaitUntil(WaitAnimation);
+        animOver = true;
+    }
+    /// <summary>
+    /// Animatorのアニメーションが終わるかどうか確認
+    /// </summary>
+    /// <returns>アニメーションの状態</returns>
+    private  bool WaitAnimation()
+    {
+        return character.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
     }
 
-    //２Dキャラの向き変更
+
+    /// <summary>
+    /// ２Dキャラの向き変更
+    /// </summary>
     public void FlipChar()
     {
         transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
-
         Transform charStat = GetComponent<CharStat>().powerText.transform;
         charStat.transform.localScale = new Vector3(-1, 1, 1);
     }
