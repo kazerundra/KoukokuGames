@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class BackGroundMove : MonoBehaviour
 {
-    private float startPos,lenght;
+    #region private field
+    private float startPos, lenght;
+    [SerializeField] private float parallax;
+    #endregion
+
+    #region public field
     public GameObject cam;
-    [SerializeField]private float parallax;
-    // Start is called before the first frame update
+    #endregion
+
+    #region UnityCallBack
     void Start()
     {
         startPos = transform.position.x;
@@ -20,16 +26,18 @@ public class BackGroundMove : MonoBehaviour
     {
         float temp = (cam.transform.position.x * (1 - parallax));
         float distance = (cam.transform.position.x * parallax);
-        
-       
-        transform.position = new Vector3(startPos + distance,transform.position.y,transform.position.z);
-        if(temp >startPos + lenght)
+
+
+        transform.position = new Vector3(startPos + distance, transform.position.y, transform.position.z);
+        if (temp > startPos + lenght)
         {
             startPos += lenght;
         }
-        else if(temp < startPos - lenght)
+        else if (temp < startPos - lenght)
         {
             startPos -= lenght;
         }
     }
+    #endregion
+
 }

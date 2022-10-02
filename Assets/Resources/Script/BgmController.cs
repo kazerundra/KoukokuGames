@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class BgmController : MonoBehaviour
 {
-    AudioSource audioSource;
-    
-    // Start is called before the first frame update
+    #region private Field
+    private AudioSource audioSource;
+    #endregion
+
+    #region UnityCallBack
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         audioSource.Play();
     }
+    #endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

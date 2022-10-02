@@ -6,63 +6,27 @@ using TMPro;
 
 public class GameController : MonoBehaviour
 {
-
-    public CharacterMovement player ,target;
-    public List<Tower> tower1 ,tower2, tower3;
+    #region private field
     private List<List<Tower>> towerList = new List<List<Tower>>();
-    [SerializeField]private int currentTowerPos =0;
-    List <Tower> currentTowerList;
+    [SerializeField] private int currentTowerPos = 0;
+    List<Tower> currentTowerList;
     Tower currentTower;
     int currentMaxNumber;
+    #endregion
+
+    #region public field
+    public CharacterMovement player, target;
+    public List<Tower> tower1, tower2, tower3;
     public GameObject GameOverScreen;
     public bool isGameOVer = false;
     public Camera mainCamera;
     public TextMeshProUGUI clearText;
+    #endregion
 
-    //全タワーの番号をランダマイズ
-    public void RandomizeTowerNumber()
-    {
-        currentMaxNumber = player.charStat.power;
-        for(int i=0; i< towerList.Count; i++)
-        {
-            List<Tower> currentList = towerList[i];
-            List<int> randomNumberList = CreateRandomNumber( currentList.Count);
-
-            randomNumberList = ShuffleList(randomNumberList);
-            //敵キャラの番号を変更
-            for (int l=0; l< randomNumberList.Count; l++)
-            {
-                currentList[l].enemy.GetComponent<CharStat>().ChangePowerText(randomNumberList[l]);
-               
-            }
-            
-        }
-    }
-
-    public bool CheckTowerClear(int towerPos )
-    {
-        int clearNumber = towerList[towerPos].Count;
-        int count = 0;
-        foreach(Tower tower in towerList[towerPos])
-        {
-            if (tower.clear)
-            {
-                count++;
-            }
-        }
-        if( count >= clearNumber)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
+    #region private function
     private void CheckGameClear()
     {
-        if (CheckTowerClear( towerList.Count - 1))
+        if (CheckTowerClear(towerList.Count - 1))
         {
             GameOver("Game Clear");
         };
@@ -73,12 +37,12 @@ public class GameController : MonoBehaviour
         List<int> randomNumberList = new List<int>();
         for (int j = 0; j < listCount; j++)
         {
-            int randomNumber = Random.Range(currentMaxNumber/2, currentMaxNumber);
+            int randomNumber = Random.Range(currentMaxNumber / 2, currentMaxNumber);
             //Debug.Log("max=" + currentMaxNumber + "random list=" + randomNumber);
             currentMaxNumber += randomNumber;
             randomNumberList.Add(randomNumber);
         }
-       
+
         return randomNumberList;
     }
 
@@ -93,18 +57,58 @@ public class GameController : MonoBehaviour
             randomNumberList[randomIndex] = temp;
         }
 
-        return randomNumberList; 
+        return randomNumberList;
+    }
+    #endregion
+
+    #region public function
+    //全タワーの番号をランダマイズ
+    public void RandomizeTowerNumber()
+    {
+        currentMaxNumber = player.charStat.power;
+        for (int i = 0; i < towerList.Count; i++)
+        {
+            List<Tower> currentList = towerList[i];
+            List<int> randomNumberList = CreateRandomNumber(currentList.Count);
+
+            randomNumberList = ShuffleList(randomNumberList);
+            //敵キャラの番号を変更
+            for (int l = 0; l < randomNumberList.Count; l++)
+            {
+                currentList[l].enemy.GetComponent<CharStat>().ChangePowerText(randomNumberList[l]);
+
+            }
+
+        }
     }
 
- 
-
+    public bool CheckTowerClear(int towerPos)
+    {
+        int clearNumber = towerList[towerPos].Count;
+        int count = 0;
+        foreach (Tower tower in towerList[towerPos])
+        {
+            if (tower.clear)
+            {
+                count++;
+            }
+        }
+        if (count >= clearNumber)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void WinBattle()
     {
         currentTower.clear = true;
-        player.charStat.ChangePowerText(player.charStat.power+  player.enemy.charStat.power);
+        player.charStat.ChangePowerText(player.charStat.power + player.enemy.charStat.power);
         if (CheckTowerClear(currentTowerPos))
         {
-            currentTowerPos ++;
+            currentTowerPos++;
             CheckGameClear();
         }
 
@@ -117,15 +121,9 @@ public class GameController : MonoBehaviour
         GameOverScreen.SetActive(true);
     }
 
-    private void Start()
-    {
-        towerList.Add(tower1);
-        towerList.Add(tower2);
-        towerList.Add(tower3);
-        currentTowerList = new List<Tower>();
-        RandomizeTowerNumber();
-    }
+    #endregion
 
+    #region coroutine
     private IEnumerator WaitAnimation()
     {
         while (!player.animOver)
@@ -151,11 +149,21 @@ public class GameController : MonoBehaviour
             GameOver("GameOver");
         }
     }
-    // Update is called once per frame
+    #endregion
+
+    #region Unity Callback
+    private void Start()
+    {
+        towerList.Add(tower1);
+        towerList.Add(tower2);
+        towerList.Add(tower3);
+        currentTowerList = new List<Tower>();
+        RandomizeTowerNumber();
+    }
+
     void Update()
     {
         mainCamera.transform.position = new Vector3(player.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z);
-
         if (Input.GetKeyUp(KeyCode.R))
         {
             SceneManager.LoadScene("Game");
@@ -200,5 +208,6 @@ public class GameController : MonoBehaviour
         
         }
     }
+    #endregion
 }
 
