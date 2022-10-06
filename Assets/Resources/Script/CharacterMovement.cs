@@ -16,6 +16,7 @@ public class CharacterMovement : MonoBehaviour
     public Transform movePos;
     public CharacterMovement enemy;
     public bool animOver = true;
+    public bool isDead = false;
     #endregion
 
     #region UnityCallBack
@@ -139,12 +140,13 @@ public class CharacterMovement : MonoBehaviour
         character.SetBool("dead", true);
         await UniTask.WaitUntil(WaitAnimation);
         animOver = true;
+        isDead = true;
     }
     /// <summary>
     /// Animatorのアニメーションが終わるかどうか確認
     /// </summary>
     /// <returns>アニメーションの状態</returns>
-    private  bool WaitAnimation()
+    public bool WaitAnimation()
     {
         return character.GetCurrentAnimatorStateInfo(0).normalizedTime > 1;
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Cysharp.Threading.Tasks;
 
 public class GameController : MonoBehaviour
 {
@@ -126,13 +127,14 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 勝った時
     /// </summary>
-    public void WinBattle()
+    public  async void WinBattle()
     {
         currentTower.clear = true;
         player.charStat.ChangePowerText(player.charStat.power + player.enemy.charStat.power);
         if (CheckTowerClear(currentTowerPos))
         {
             currentTowerPos++;
+            await UniTask.WaitUntil(player.WaitAnimation);
             CheckGameClear();
         }
 
@@ -142,10 +144,11 @@ public class GameController : MonoBehaviour
     /// ゲームオーバー
     /// </summary>
     /// <param name="gameoverText">ゲームオーバーのテキスト</param>
-    public void GameOver(string gameoverText)
+    public  async void GameOver(string gameoverText)
     {
         isGameOVer = true;
         clearText.text = gameoverText;
+        await UniTask.WaitUntil( player.WaitAnimation);
         GameOverScreen.SetActive(true);
     }
 
@@ -174,7 +177,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            while (!player.enemy.animOver)
+            while (!player.isDead)
             {
                 yield return new WaitForEndOfFrame();
             }
